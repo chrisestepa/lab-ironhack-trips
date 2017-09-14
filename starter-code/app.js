@@ -7,11 +7,13 @@ const cookieParser   = require("cookie-parser");
 const bodyParser     = require("body-parser");
 const mongoose       = require("mongoose");
 const app            = express();
+const MongoStore = require("connect-mongo")(session);
 
-// Controllers
+const authRoutes = require('./routes/auth');
 
-// Mongoose configuration
-mongoose.connect("mongodb://localhost/ironhack-trips");
+
+mongoose.connect(dbURL, {useMongoClient: true})
+        .then(() => console.log('Conectado al a BBDD'));
 
 // Middlewares configuration
 app.use(logger("dev"));
@@ -34,6 +36,9 @@ app.use(session({
 app.use(cookieParser());
 
 // Routes
+app.use('/', authRoutes);
+
+
 // app.use("/", index);
 
 // catch 404 and forward to error handler

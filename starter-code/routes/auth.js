@@ -1,10 +1,12 @@
 const User = require("../models/User");
+const Trip = require("../models/Trip");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 const path = require('path');
 const passport = require('passport');
 const debug = require('debug')("app:auth:local");
 const flash = require("connect-flash");
+const ensureLogin = require("connect-ensure-login");
 
 const router = require('express').Router();
 
@@ -55,7 +57,7 @@ router.post("/login", passport.authenticate("local", {
   passReqToCallback: true
 }));
 
-router.get("/my-trips", (req, res ,next) => {
+router.get("/my-trips", ensureLogin.ensureLoggedIn(), (req, res) => {
   res.render("auth/my-trips");
 });
 

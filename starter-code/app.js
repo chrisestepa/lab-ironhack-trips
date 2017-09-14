@@ -10,14 +10,16 @@ const app = express();
 const flash = require("connect-flash");
 const MongoStore = require("connect-mongo")(session);
 const {dbURL} = require('./config/db');
+const multer = require('multer');
 
 const authRoutes = require('./routes/auth');
+const tripRoutes = require('./routes/trips');
+
 
 mongoose.connect(dbURL, {
     useMongoClient: true
   })
   .then(() => console.log('Conectado al a BBDD'));
-
 
 require('./passport/serializers');
 require('./passport/local');
@@ -28,7 +30,6 @@ app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // View engine configuration
 app.set("views", path.join(__dirname, "views"));
@@ -52,6 +53,7 @@ app.use(session({
 
 // Routes
 app.use('/', authRoutes);
+app.use('/', tripRoutes);
 app.get('/', (req, res) => res.render('index', {
   user: req.user
 }));

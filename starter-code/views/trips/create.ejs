@@ -1,0 +1,21 @@
+
+<h2>Create new trip</h2>
+
+ <form enctype="multipart/form-data" action="/my-trips/new" method="POST" id="form-container">
+  <label for="destination">Destination</label>
+  <input id="destination" type="text" name="destination" placeholder="JonSnow">
+  <br><br>
+  <label for="description">Description</label>
+  <input id="description" type="text" name="description" placeholder="Your password">
+  <br><br>
+  <h2>Upload your photo</h2>
+  <input type="file" name="pic_path">
+
+  <% if (typeof message !== "undefined") { %>
+    <div class="error-message"><%= message %></div>
+  <% } %>
+  <br><br>
+
+    <button>Create trip</button>
+
+</form>

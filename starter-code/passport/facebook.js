@@ -17,8 +17,8 @@ passport.use(new FbStrategy({
     }
 
     const newUser = new User({
-      facebookID: profile.id,
-      username: profile.displayName
+      facebook_id: profile.id,
+      facebook_name: profile.displayName
     });
 
     newUser.save((err) => {

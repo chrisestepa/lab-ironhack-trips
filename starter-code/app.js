@@ -11,19 +11,15 @@ const flash = require("connect-flash");
 const MongoStore = require("connect-mongo")(session);
 const {dbURL} = require('./config/db');
 const multer = require('multer');
+const passport = require('passport');
 
 const authRoutes = require('./routes/auth');
-const tripRoutes = require('./routes/trips');
 
 
 mongoose.connect(dbURL, {
     useMongoClient: true
   })
   .then(() => console.log('Conectado al a BBDD'));
-
-require('./passport/serializers');
-require('./passport/local');
-require('./passport/facebook');
 
 // Middlewares configuration
 app.use(logger("dev"));
@@ -38,6 +34,12 @@ app.use(expressLayouts);
 app.set("layout", "layout");
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+require('./passport/serializers');
+require('./passport/local');
+require('./passport/facebook');
 
 // Authentication
 
@@ -53,11 +55,6 @@ app.use(session({
 
 // Routes
 app.use('/', authRoutes);
-app.use('/', tripRoutes);
-app.get('/', (req, res) => res.render('index', {
-  user: req.user
-}));
-
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

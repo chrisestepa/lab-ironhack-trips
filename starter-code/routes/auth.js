@@ -7,64 +7,49 @@ const passport = require('passport');
 const debug = require('debug')("app:auth:local");
 const flash = require("connect-flash");
 const ensureLogin = require("connect-ensure-login");
+const multer = require('multer');
+const upload = multer({  dest: './public/uploads/'});
 
 const router = require('express').Router();
 
-router.get("/signup", (req, res, next) => {
-  res.render("auth/signup");
-});
-
-router.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
-    return;
-  }
-
-  User.findOne({ username }, "username", (err, user) => {
-    if (user !== null) {
-      res.render("auth/signup", { message: "The username already exists" });
-      return;
-    }
-
-    const salt = bcrypt.genSaltSync(bcryptSalt);
-    const hashPass = bcrypt.hashSync(password, salt);
-
-    debug("User created");
-
-    const newUser = new User({
-      username,
-      password: hashPass
-    })
-    .save()
-    .then(user => res.redirect('/'))
-    .catch(e => res.render("auth/signup", { message: "Something went wrong" }));
-
-  });
-});
-
-router.get('/login',(req,res) =>{
-  res.render('auth/login');
-  // res.render('auth/login',{ message: req.flash("error") });
-});
-
-router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/login",
-  failureFlash: true,
-  passReqToCallback: true
+router.get('/', (req, res) => res.render('index', {
+  user: req.user
 }));
 
-router.get("/my-trips", ensureLogin.ensureLoggedIn(), (req, res) => {
-  res.render("auth/my-trips");
+router.get("/my-trips", (req, res) => {
+  res.render("trips/trips");
 });
 
-router.post('/logout',(req,res) =>{
+router.get('/logout',(req,res) =>{
   req.logout();
   res.redirect("/");
 });
+
+router.get("/my-trips/new", (req, res, next) => {
+  res.render("trips/create");
+});
+
+router.post("/my-trips/new", upload.single('pic_path'), (req, res, next) => {
+  const destination = req.body.destination;
+  const description = req.body.description;
+  const pic_path = req.body.pic_path;
+
+  if (destination === "" || description === "") {
+    res.render("trips/create", { message: "Indicate destination and description" });
+    return;
+  }
+
+    const newTrip = new Trip({
+      destination,
+      description,
+      pic_path
+    })
+    .save()
+    .then(trip => res.redirect('/'))
+    .catch(e => res.render("trips/create", { message: "Something went wrong" }));
+
+});
+
 
 router.get("/auth/facebook", passport.authenticate("facebook"));
 router.get("/auth/facebook/callback", passport.authenticate("facebook", {

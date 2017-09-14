@@ -43,7 +43,6 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
-
 router.get('/login',(req,res) =>{
   res.render('auth/login');
   // res.render('auth/login',{ message: req.flash("error") });
@@ -56,15 +55,18 @@ router.post("/login", passport.authenticate("local", {
   passReqToCallback: true
 }));
 
+router.get("/my-trips", (req, res ,next) => {
+  res.render("auth/my-trips");
+});
+
 router.post('/logout',(req,res) =>{
   req.logout();
   res.redirect("/");
 });
 
-
 router.get("/auth/facebook", passport.authenticate("facebook"));
 router.get("/auth/facebook/callback", passport.authenticate("facebook", {
-  successRedirect: "/",
+  successRedirect: "/my-trips",
   failureRedirect: "/"
 }));
 

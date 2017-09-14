@@ -3,8 +3,8 @@ const User = require('../models/User');
 const FbStrategy = require('passport-facebook').Strategy;
 
 passport.use(new FbStrategy({
-  clientID: "138265856787332",
-  clientSecret: "f6fa6a3f54ccb85d8c995845279104b5",
+  clientID: "128146984419587",
+  clientSecret: "bf89bb9f763e145143bc58a5dbdb017c",
   callbackURL: "/auth/facebook/callback"
 }, (accessToken, refreshToken, profile, next) => {
   console.log(profile);

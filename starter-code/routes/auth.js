@@ -4,6 +4,7 @@ const bcryptSalt = 10;
 const path = require('path');
 const passport = require('passport');
 const debug = require('debug')("app:auth:local");
+const flash = require("connect-flash");
 
 const router = require('express').Router();
 
@@ -44,7 +45,8 @@ router.post("/signup", (req, res, next) => {
 
 
 router.get('/login',(req,res) =>{
-  res.render('auth/login',{ message: req.flash("error") });
+  res.render('auth/login');
+  // res.render('auth/login',{ message: req.flash("error") });
 });
 
 router.post("/login", passport.authenticate("local", {

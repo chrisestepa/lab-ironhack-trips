@@ -8,7 +8,9 @@ const debug = require('debug')("app:auth:local");
 const flash = require("connect-flash");
 const ensureLogin = require("connect-ensure-login");
 const multer = require('multer');
-const upload = multer({  dest: './public/uploads/'});
+const upload = multer({
+  dest: './public/uploads/'
+});
 
 const router = require('express').Router();
 
@@ -20,7 +22,7 @@ router.get("/my-trips", (req, res) => {
   res.render("trips/trips");
 });
 
-router.get('/logout',(req,res) =>{
+router.get('/logout', (req, res) => {
   req.logout();
   res.redirect("/");
 });
@@ -35,18 +37,24 @@ router.post("/my-trips/new", upload.single('pic_path'), (req, res, next) => {
   const pic_path = req.body.pic_path;
 
   if (destination === "" || description === "") {
-    res.render("trips/create", { message: "Indicate destination and description" });
+    res.render("trips/create", {
+      message: "Indicate destination and description"
+    });
     return;
   }
 
-    const newTrip = new Trip({
+  const newTrip = new Trip({
+      // user_id: profile.id,
+      // user_name: profile.displayName,
       destination,
       description,
       pic_path
     })
     .save()
     .then(trip => res.redirect('/'))
-    .catch(e => res.render("trips/create", { message: "Something went wrong" }));
+    .catch(e => res.render("trips/create", {
+      message: "Something went wrong"
+    }));
 
 });
 

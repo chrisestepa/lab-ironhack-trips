@@ -34,12 +34,13 @@ app.use(expressLayouts);
 app.set("layout", "layout");
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 require('./passport/serializers');
 require('./passport/local');
 require('./passport/facebook');
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // Authentication
 
@@ -55,6 +56,8 @@ app.use(session({
 
 // Routes
 app.use('/', authRoutes);
+app.get('/', (req,res) => res.render('index',{user:req.user}));
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
